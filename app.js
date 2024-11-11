@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const mainRouter = require("./routes/index");
 
 const app = express();
 
@@ -11,6 +12,9 @@ mongoose
     console.log("Connected to the DataBase");
   })
   .catch((err) => console.error(err));
+
+//Route Implements
+app.use("/", mainRouter);
 
 app.listen(PORT, () => {
   console.log("Running on Port:", PORT);
