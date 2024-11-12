@@ -1,7 +1,8 @@
 const router = require("express").Router(); //import express and express router
+const { getUsers, createUser, getUser } = require("../controllers/users");
 
-router.get("/", () => console.log("GETTING USERS")); //no '/users' because routes are cumulative; default '/users' route is in index.js
-router.get("/:userId", () => console.log("GETTING USERS BY ID"));
-router.post("/", () => console.log("POSTING"));
+router.get("/", getUsers); //no '/users' because routes are cumulative; default '/users' route is in index.js
+router.get("/:userId", getUser);
+router.post("/", createUser);
 
 module.exports = router;

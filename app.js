@@ -14,6 +14,7 @@ mongoose
   .catch((err) => console.error(err));
 
 //Route Implements
+app.use(express.json()); //parse Data before any routers. You will usually need to do this
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {
