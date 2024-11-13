@@ -1,11 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const mainRouter = require("./routes/index");
+const mainRouter = require("./routes/index"); //this includes both routers
 
 const app = express();
 
 const { PORT = 3001 } = process.env;
 
+//establish moongoose connection to database
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
