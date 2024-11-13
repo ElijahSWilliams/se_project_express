@@ -39,9 +39,9 @@ const getUser = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if ((err = "DocumentNotFoundError")) {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: err.message }); //send 404 not found
-      } else if ((err = "CastError")) {
+      } else if (err.name === "CastError") {
         return res.status(400).send({ message: err.message }); //send 400 bad request
       }
       return res.status(500).send({ message: err.message });

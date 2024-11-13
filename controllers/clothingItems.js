@@ -1,6 +1,8 @@
 const ClothingItems = require("../models/clothingItems");
 
 //ClothingItem Controller File
+
+//Read
 const getItems = (req, res) => {
   ClothingItems.find({})
     .then((clothes) => {
@@ -8,14 +10,18 @@ const getItems = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: "Error from getItems" });
     });
 };
 
+//create
 const createItem = (req, res) => {
-  const { name, weather, imageUrl } = req.body;
+  const { name, weather, imageUrl, owner } = req.body; //destructure
 
-  ClothingItems.create({ name, weather, imageUrl })
+  console.log(req.body);
+  console.log(owner);
+
+  ClothingItems.create({ name, weather, imageUrl, owner })
     .then((item) => {
       res.status(201).send(item);
     })
@@ -24,12 +30,43 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(400).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: "Error from createItem" });
     });
 };
 
-const deleteItem = (req, res) => {
-  const {} = req.body;
+//Update
+const updateItem = (req, res) => {
+  const { itemId } = req.params; //get item ID from req params
+  const { imageUrl } = req.body; //get image Url from req body
+
+  ClothingItems.findByIdAndUpdate(itemId, { $set: { imageUrl } })
+    .orFail()
+    .then((item) => {
+      res.status(200).send({ item });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).send({ message: "Error from 'updateItem'", err });
+    });
 };
 
-module.exports = { getItems, createItem };
+//Delete
+const deleteItem = (req, res) => {
+  const { itemId } = req.params; //get item ID from req param
+  console.log(itemId);
+
+  ClothingItems.findByIdAndDelete(itemId)
+    .orFail()
+    .then((item) => {
+      res.status(200).send({ message: "Successfully Deleted", item });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "Item Not Found") {
+        return res.status(404).send({ message: "Item Not Found" });
+      }
+      return res.status(500).send({ message: "Error from deleteItem" });
+    });
+};
+
+module.exports = { getItems, createItem, updateItem, deleteItem };

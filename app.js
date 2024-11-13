@@ -18,6 +18,14 @@ mongoose
 app.use(express.json()); //parse Data before any routers. You will usually need to do this
 app.use("/", mainRouter);
 
+//temporary authorization middleware
+app.use((req, res, next) => {
+  req.user = {
+    _id: "6734dab992c33ec1c1a0d4cb", //user id
+  };
+  next();
+});
+
 app.listen(PORT, () => {
   console.log("Running on Port:", PORT);
 });
