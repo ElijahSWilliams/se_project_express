@@ -13,7 +13,7 @@ const getItems = (req, res) => {
 };
 
 const createItem = (req, res) => {
-  const { name, weather, imageUrl, likes } = req.body;
+  const { name, weather, imageUrl } = req.body;
 
   ClothingItems.create({ name, weather, imageUrl })
     .then((item) => {
