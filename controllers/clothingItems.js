@@ -1,4 +1,5 @@
 const ClothingItems = require("../models/clothingItems");
+const { dataNotFound, defaultData, invalidData } = require("../utils/errors");
 
 //ClothingItem Controller File
 
@@ -10,7 +11,7 @@ const getItems = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: "Error from getItems" });
+      return res.status(defaultData).send({ message: "Error from getItems" });
     });
 };
 
@@ -30,9 +31,9 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(invalidData).send({ message: err.message });
       }
-      return res.status(500).send({ message: "Error from createItem" });
+      return res.status(defaultData).send({ message: "Error from createItem" });
     });
 };
 
@@ -48,7 +49,9 @@ const updateItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: "Error from 'updateItem'", err });
+      return res
+        .status(defaultData)
+        .send({ message: "Error from 'updateItem'", err });
     });
 };
 
@@ -65,9 +68,9 @@ const deleteItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "Item Not Found") {
-        return res.status(404).send({ message: "Item Not Found" });
+        return res.status(dataNotFound).send({ message: "Item Not Found" });
       }
-      return res.status(500).send({ message: "Error from deleteItem" });
+      return res.status(defaultData).send({ message: "Error from deleteItem" });
     });
 };
 

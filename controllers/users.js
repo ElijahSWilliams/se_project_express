@@ -1,7 +1,8 @@
 const User = require("../models/user"); //import user schema
 
-//User Controller File
+const { invalidData, dataNotFound, defaultData } = require("../utils/errors");
 
+//User Controller File
 const getUsers = (req, res) => {
   User.find({}) //empty curly braces to find all users
     .then((users) => {
@@ -9,7 +10,7 @@ const getUsers = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message }); //send 500 error code and error message
+      return res.status(defaultData).send({ message: err.message }); //send 500 error code and error message
     });
 };
 
@@ -23,9 +24,9 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res.status(invalidData).send({ message: err.message });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(defaultData).send({ message: err.message });
     });
 };
 
@@ -40,11 +41,11 @@ const getUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message }); //send 404 not found
+        return res.status(dataNotFound).send({ message: err.message }); //send 404 not found
       } else if (err.name === "CastError") {
-        return res.status(400).send({ message: err.message }); //send 400 bad request
+        return res.status(invalidData).send({ message: err.message }); //send 400 bad request
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(defaultData).send({ message: err.message });
     });
 };
 
