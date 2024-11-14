@@ -16,7 +16,9 @@ const getItems = (req, res) => {
 
 //create
 const createItem = (req, res) => {
-  const { name, weather, imageUrl, owner } = req.body; //destructure
+  const { name, weather, imageUrl } = req.body; //destructure
+
+  const owner = req.user._id;
 
   console.log(req.body);
   console.log(owner);
