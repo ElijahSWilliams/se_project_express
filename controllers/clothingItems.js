@@ -100,6 +100,10 @@ const dislikeItem = (req, res) => {
     })
     .catch((err) => {
       console.log(err);
+      console.log(err.name);
+      if (err.name === "CastError") {
+        return res.status(invalidData).send({ message: "Invalid ID" });
+      }
       return res
         .status(defaultData)
         .send({ message: "Error from dislike function" });
