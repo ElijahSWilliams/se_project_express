@@ -113,7 +113,7 @@ const dislikeItem = (req, res) => {
 //Delete
 const deleteItem = (req, res) => {
   const { itemId } = req.params; //get item ID from req param
-  console.log(itemId);
+  console.log("itemId:", itemId);
 
   ClothingItems.findByIdAndDelete(itemId)
     .orFail()
@@ -122,8 +122,11 @@ const deleteItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "Item Not Found") {
+      console.log(err.name);
+      if (err.name === "DocumentNotFoundError") {
         return res.status(dataNotFound).send({ message: "Item Not Found" });
+      } else if (err.name === "CastError") {
+        return res.status(invalidData).send({ message: "Invalid Data" });
       }
       return res.status(defaultData).send({ message: "Error from deleteItem" });
     });
