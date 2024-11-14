@@ -55,6 +55,53 @@ const updateItem = (req, res) => {
     });
 };
 
+//Like
+const likeItem = (req, res) => {
+  const { itemId } = req.params;
+  console.log(itemId);
+  //find item by ID and update
+  ClothingItems.findByIdAndUpdate(
+    itemId,
+    { $addToSet: { likes: req.user._id } }, //add user ID to likes array if not already there
+    { new: true } //return updates document
+  )
+    .then((item) => {
+      if (!item) {
+        return res.status(dataNotFound).send({ message: "Item Not Found" });
+      }
+      return res.status(200).send({ message: "Liked", item });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(defaultData).send({ message: "Error from LikeItem" });
+    });
+};
+
+const dislikeItem = (req, res) => {
+  const { itemId } = req.params;
+  console.log(itemId);
+
+  ClothingItems.findByIdAndDelete(
+    itemId,
+    { $pull: { likes: req.user._id } }, //remove user id from array
+    { new: true } //return updated array
+  )
+    .then((item) => {
+      if (!item) {
+        return res
+          .status(dataNotFound)
+          .send({ message: "Item Not Founf in dislike function" });
+      }
+      return res.status(200).send({ message: "disliked" }, item);
+    })
+    .catch((err) => {
+      console.log(err);
+      return res
+        .status(defaultData)
+        .send({ message: "Error from dislike function" });
+    });
+};
+
 //Delete
 const deleteItem = (req, res) => {
   const { itemId } = req.params; //get item ID from req param
@@ -74,4 +121,11 @@ const deleteItem = (req, res) => {
     });
 };
 
-module.exports = { getItems, createItem, updateItem, deleteItem };
+module.exports = {
+  getItems,
+  createItem,
+  updateItem,
+  likeItem,
+  dislikeItem,
+  deleteItem,
+};

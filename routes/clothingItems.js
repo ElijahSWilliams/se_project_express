@@ -3,6 +3,7 @@ const {
   getItems,
   createItem,
   updateItem,
+  likeItem,
   deleteItem,
 } = require("../controllers/clothingItems"); //extract functions from clothingItems file
 
@@ -14,6 +15,9 @@ router.get("/", getItems);
 
 //Update
 router.put("/:itemId", updateItem);
+
+//like
+router.put("/like/:itemId", likeItem);
 
 //Delete
 router.delete("/:itemId", deleteItem);
