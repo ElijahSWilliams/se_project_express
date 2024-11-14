@@ -73,6 +73,10 @@ const likeItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
+      console.log(err.name);
+      if (err.name === "CastError") {
+        return res.status(invalidData).send({ message: "Invalid Id" });
+      }
       return res.status(defaultData).send({ message: "Error from LikeItem" });
     });
 };
