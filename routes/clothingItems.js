@@ -21,7 +21,7 @@ router.put("/:itemId", updateItem);
 router.put("/:itemId/likes", likeItem);
 
 //Unlike
-router.put("/:itemId/likes", dislikeItem);
+router.delete("/:itemId/likes", dislikeItem);
 
 //Delete
 router.delete("/:itemId", deleteItem);

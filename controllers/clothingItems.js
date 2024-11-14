@@ -79,7 +79,7 @@ const likeItem = (req, res) => {
 
 const dislikeItem = (req, res) => {
   const { itemId } = req.params;
-  console.log(itemId);
+  console.log("itemId", itemId);
 
   ClothingItems.findByIdAndUpdate(
     itemId,
