@@ -81,7 +81,7 @@ const dislikeItem = (req, res) => {
   const { itemId } = req.params;
   console.log(itemId);
 
-  ClothingItems.findByIdAndDelete(
+  ClothingItems.findByIdAndUpdate(
     itemId,
     { $pull: { likes: req.user._id } }, //remove user id from array
     { new: true } //return updated array
@@ -90,9 +90,9 @@ const dislikeItem = (req, res) => {
       if (!item) {
         return res
           .status(dataNotFound)
-          .send({ message: "Item Not Founf in dislike function" });
+          .send({ message: "Item Not Found in dislike function" });
       }
-      return res.status(200).send({ message: "disliked" }, item);
+      return res.status(200).send({ message: "disliked", item });
     })
     .catch((err) => {
       console.log(err);

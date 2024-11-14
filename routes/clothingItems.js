@@ -5,6 +5,7 @@ const {
   updateItem,
   likeItem,
   deleteItem,
+  dislikeItem,
 } = require("../controllers/clothingItems"); //extract functions from clothingItems file
 
 //Create
@@ -17,7 +18,10 @@ router.get("/", getItems);
 router.put("/:itemId", updateItem);
 
 //like
-router.put("/like/:itemId", likeItem);
+router.put("/:itemId/likes", likeItem);
+
+//Unlike
+router.put("/:itemId/likes", dislikeItem);
 
 //Delete
 router.delete("/:itemId", deleteItem);
