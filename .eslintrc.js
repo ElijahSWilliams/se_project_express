@@ -1,7 +1,3 @@
-console.log("abcd");
-const _id = "1234";
-console.log(_id);
-
 module.exports = {
   env: {
     es2021: true,

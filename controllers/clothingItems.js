@@ -1,9 +1,9 @@
 const ClothingItems = require("../models/clothingItems");
 const { dataNotFound, defaultData, invalidData } = require("../utils/errors");
 
-//ClothingItem Controller File
+// ClothingItem Controller File
 
-//Read
+// Read
 const getItems = (req, res) => {
   ClothingItems.find({})
     .then((clothes) => {
@@ -11,13 +11,15 @@ const getItems = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(defaultData).send({ message: "Error from getItems" });
+      return res
+        .status(defaultData)
+        .send({ message: "An Error from getItems has occured" });
     });
 };
 
-//create
+// create
 const createItem = (req, res) => {
-  const { name, weather, imageUrl } = req.body; //destructure
+  const { name, weather, imageUrl } = req.body; // destructure
 
   const owner = req.user._id;
 
@@ -33,37 +35,21 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(invalidData).send({ message: err.message });
       }
-      return res.status(defaultData).send({ message: "Error from createItem" });
-    });
-};
-
-//Update
-const updateItem = (req, res) => {
-  const { itemId } = req.params; //get item ID from req params
-  const { imageUrl } = req.body; //get image Url from req body
-
-  ClothingItems.findByIdAndUpdate(itemId, { $set: { imageUrl } })
-    .orFail()
-    .then((item) => {
-      res.status(200).send({ item });
-    })
-    .catch((err) => {
-      console.error(err);
       return res
         .status(defaultData)
-        .send({ message: "Error from 'updateItem'", err });
+        .send({ message: "An Error from createItem has occured" });
     });
 };
 
-//Like
+// Like
 const likeItem = (req, res) => {
   const { itemId } = req.params;
   console.log(itemId);
-  //find item by ID and update
+  // find item by ID and update
   ClothingItems.findByIdAndUpdate(
     itemId,
-    { $addToSet: { likes: req.user._id } }, //add user ID to likes array if not already there
-    { new: true } //return updates document
+    { $addToSet: { likes: req.user._id } }, // add user ID to likes array if not already there
+    { new: true } // return updates document
   )
     .then((item) => {
       if (!item) {
@@ -77,7 +63,9 @@ const likeItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(invalidData).send({ message: "Invalid Id" });
       }
-      return res.status(defaultData).send({ message: "Error from LikeItem" });
+      return res
+        .status(defaultData)
+        .send({ message: "An Error from LikeItem has occured" });
     });
 };
 
@@ -87,8 +75,8 @@ const dislikeItem = (req, res) => {
 
   ClothingItems.findByIdAndUpdate(
     itemId,
-    { $pull: { likes: req.user._id } }, //remove user id from array
-    { new: true } //return updated array
+    { $pull: { likes: req.user._id } }, // remove user id from array
+    { new: true } // return updated array
   )
     .then((item) => {
       if (!item) {
@@ -106,13 +94,13 @@ const dislikeItem = (req, res) => {
       }
       return res
         .status(defaultData)
-        .send({ message: "Error from dislike function" });
+        .send({ message: "An Error from dislike function has occured" });
     });
 };
 
-//Delete
+// Delete
 const deleteItem = (req, res) => {
-  const { itemId } = req.params; //get item ID from req param
+  const { itemId } = req.params; // get item ID from req param
   console.log("itemId:", itemId);
 
   ClothingItems.findByIdAndDelete(itemId)
@@ -125,17 +113,18 @@ const deleteItem = (req, res) => {
       console.log(err.name);
       if (err.name === "DocumentNotFoundError") {
         return res.status(dataNotFound).send({ message: "Item Not Found" });
-      } else if (err.name === "CastError") {
+      } if (err.name === "CastError") {
         return res.status(invalidData).send({ message: "Invalid Data" });
       }
-      return res.status(defaultData).send({ message: "Error from deleteItem" });
+      return res
+        .status(defaultData)
+        .send({ message: "An Error from deleteItem has occured" });
     });
 };
 
 module.exports = {
   getItems,
   createItem,
-  updateItem,
   likeItem,
   dislikeItem,
   deleteItem,

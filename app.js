@@ -1,12 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const mainRouter = require("./routes/index"); //this includes both routers
+const mainRouter = require("./routes/index"); // this includes both routers
 
 const app = express();
 
 const { PORT = 3001 } = process.env;
 
-//establish moongoose connection to database
+// establish moongoose connection to database
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => {
@@ -14,13 +14,13 @@ mongoose
   })
   .catch((err) => console.error(err));
 
-//Route Implements
-app.use(express.json()); //parse Data before any routers. You will usually need to do this
+// Route Implements
+app.use(express.json()); // parse Data before any routers. You will usually need to do this
 
-//temporary authorization middleware
+// temporary authorization middleware
 app.use((req, res, next) => {
   req.user = {
-    _id: "6734dab992c33ec1c1a0d4cb", //user id
+    _id: "6734dab992c33ec1c1a0d4cb", // user id
   };
   next();
 });

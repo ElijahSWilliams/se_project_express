@@ -1,29 +1,25 @@
-const router = require("express").Router(); //import express and router
+const router = require("express").Router(); // import express and router
 const {
   getItems,
   createItem,
-  updateItem,
   likeItem,
   deleteItem,
   dislikeItem,
-} = require("../controllers/clothingItems"); //extract functions from clothingItems file
+} = require("../controllers/clothingItems"); // extract functions from clothingItems file
 
-//Create
+// Create
 router.post("/", createItem);
 
-//Read
+// Read
 router.get("/", getItems);
 
-//Update
-router.put("/:itemId", updateItem);
-
-//like
+// like
 router.put("/:itemId/likes", likeItem);
 
-//Unlike
+// Unlike
 router.delete("/:itemId/likes", dislikeItem);
 
-//Delete
+// Delete
 router.delete("/:itemId", deleteItem);
-//export router
+// export router
 module.exports = router;
