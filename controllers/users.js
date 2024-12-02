@@ -1,6 +1,11 @@
 const User = require("../models/user"); // import user schema
-
-const { invalidData, dataNotFound, defaultData } = require("../utils/errors");
+const bcrypt = require("bcrypt"); //import
+const {
+  invalidData,
+  dataNotFound,
+  defaultData,
+  duplicateData,
+} = require("../utils/errors");
 
 // User Controller File
 const getUsers = (req, res) => {
@@ -15,20 +20,37 @@ const getUsers = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar, email, password } = req.body; //get name avatar email and password
 
-  User.create({ name, avatar })
-    .then((user) => {
-      res.status(201).send(user);
-    })
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res.status(invalidData).send({ message: err.message });
-      }
-      return res.status(defaultData).send({ message: "An error has occured" });
-    });
-};
+  //check if user exists
+  User.findOne({ email }).then((existingUser) => {
+    if (existingUser) {
+      return res.status(duplicateData).send({ message: "User Already Exists" });
+    }
+    //hash password before creating a user
+    bcrypt
+      .hash(password, 10)
+      .then((hashPassword) => {
+        User.create({ name, avatar, email, password: hashPassword })
+          .then((user) => {
+            res.status(201).send(user);
+          })
+          .catch((err) => {
+            console.error(err);
+            if (err.name === "ValidationError") {
+              return res.status(invalidData).send({ message: err.message });
+            }
+            return res
+              .status(defaultData)
+              .send({ message: "An error has occured" });
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res.status(defaultData).send({ message: "An Error Occured" });
+      });
+  }); //
+}; //end createUser
 
 const getUser = (req, res) => {
   const { userId } = req.params;
@@ -42,7 +64,8 @@ const getUser = (req, res) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(dataNotFound).send({ message: err.message }); // send 404 not found
-      } if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(invalidData).send({ message: err.message }); // send 400 bad request
       }
       return res.status(defaultData).send({ message: "An Error has occured" });

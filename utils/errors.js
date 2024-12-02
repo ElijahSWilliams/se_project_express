@@ -1,3 +1,8 @@
 // Error Codes
 
-module.exports = { invalidData: 400, dataNotFound: 404, defaultData: 500 };
+module.exports = {
+  invalidData: 400,
+  dataNotFound: 404,
+  defaultData: 500,
+  duplicateData: 409,
+};
