@@ -1,10 +1,13 @@
 const User = require("../models/user"); // import user schema
 const bcrypt = require("bcrypt"); //import
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
 const {
   invalidData,
   dataNotFound,
   defaultData,
   duplicateData,
+  unauthorizedData,
 } = require("../utils/errors");
 
 // User Controller File
@@ -75,7 +78,15 @@ const getUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
-  User.f;
+  return User.findUserByCredential(email, password)
+    .then((user) => {
+      //create a JSW token
+      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+      return res.status(200).send({ user, token });
+    })
+    .catch((err) => {
+      return res.status(unauthorizedData).send({ message: err.message });
+    });
 };
 
-module.exports = { getUsers, createUser, getUser };
+module.exports = { getUsers, createUser, getUser, login };

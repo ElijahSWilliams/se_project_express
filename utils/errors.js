@@ -5,4 +5,5 @@ module.exports = {
   dataNotFound: 404,
   defaultData: 500,
   duplicateData: 409,
+  unauthorizedData: 401,
 };
