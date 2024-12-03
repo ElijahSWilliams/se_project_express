@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -34,6 +35,26 @@ const userSchema = new mongoose.Schema({
     required: [true, "Enter a password"],
   },
 });
+
+//create custom findUserByCredential method that is attached to userSchema
+userSchema.statics.findUserByCredential = function findUserByCredential {
+  return this.findOne({email}).then((user) => {
+    //if user not found
+    if (!user) {
+      return Promise.reject(new Error("Incorrect Email or Password"));//throw error
+    }
+
+    //if user is found
+    return bcrypt.compare(password, user.password).then((matched) => {
+      //if passwords dont match
+      if (!matched) {
+        return Promise.reject(new Error("Incorrect Email or Password")); //throw error
+      }
+      //if passwords do match
+      return user; //user is available
+    })
+  })
+};
 
 // Export the model
 const User = mongoose.model("User", userSchema);
