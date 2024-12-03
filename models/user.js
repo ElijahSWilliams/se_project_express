@@ -37,11 +37,14 @@ const userSchema = new mongoose.Schema({
 });
 
 //create custom findUserByCredential method that is attached to userSchema
-userSchema.statics.findUserByCredential = function findUserByCredential {
-  return this.findOne({email}).then((user) => {
+userSchema.statics.findUserByCredential = function findUserByCredential(
+  email,
+  password
+) {
+  return this.findOne({ email }).then((user) => {
     //if user not found
     if (!user) {
-      return Promise.reject(new Error("Incorrect Email or Password"));//throw error
+      return Promise.reject(new Error("Incorrect Email or Password")); //throw error
     }
 
     //if user is found
@@ -52,8 +55,8 @@ userSchema.statics.findUserByCredential = function findUserByCredential {
       }
       //if passwords do match
       return user; //user is available
-    })
-  })
+    });
+  });
 };
 
 // Export the model
