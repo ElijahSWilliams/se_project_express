@@ -75,6 +75,23 @@ const getUser = (req, res) => {
     });
 };
 
+const getCurrentUser = (req, res) => {
+  const userId = req.user._id; //get user Id
+
+  //access user
+  const user = User.findById(userId)
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: "Can't Find User" });
+      }
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(defaultData).send({ message: "Server Error" });
+    });
+};
+
 const login = (req, res) => {
   const { email, password } = req.body;
 
@@ -89,4 +106,4 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser, login };
+module.exports = { getUsers, createUser, getUser, login, getCurrentUser };

@@ -1,4 +1,5 @@
 const router = require("express").Router(); // import express and router
+const { verifyMiddleWare } = require("../middlewares/auth");
 const {
   getItems,
   createItem,
@@ -8,18 +9,19 @@ const {
 } = require("../controllers/clothingItems"); // extract functions from clothingItems file
 
 // Create
-router.post("/", createItem);
+router.post("/", verifyMiddleWare, createItem);
 
 // Read
-router.get("/", getItems);
+router.get("/", verifyMiddleWare, getItems);
 
 // like
-router.put("/:itemId/likes", likeItem);
+router.put("/:itemId/likes", verifyMiddleWare, likeItem);
 
 // Unlike
-router.delete("/:itemId/likes", dislikeItem);
+router.delete("/:itemId/likes", verifyMiddleWare, dislikeItem);
 
 // Delete
-router.delete("/:itemId", deleteItem);
+router.delete("/:itemId", verifyMiddleWare, deleteItem);
+
 // export router
 module.exports = router;
