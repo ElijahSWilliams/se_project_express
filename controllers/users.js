@@ -92,6 +92,54 @@ const getCurrentUser = (req, res) => {
     });
 };
 
+const updateProfile = (req, res) => {
+  const userId = req.user._id; //get ID
+
+  const { name, avatar } = req.body; //destructure fields that we want to change
+
+  const updatedInfo = {}; //empty obj to store updated info
+
+  //make sure nothing is empty
+  if (!name && !avatar) {
+    return res
+      .status(invalidData)
+      .send({ message: "Please Enter a name and avatar" });
+  }
+
+  if (name) {
+    updatedInfo.name = name;
+  }
+
+  if (avatar) {
+    updatedInfo.avatar = avatar;
+  }
+
+  //update the info
+  User.findByIdAndUpdate(userId, updatedInfo, {
+    new: true,
+    runValidators: true,
+  })
+    .then((user) => {
+      if (!user) {
+        //if no user
+        return res.status(dataNotFound).send({ message: "user Not Found" });
+      }
+      //return
+      return res.status(200).send(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        //if Validation Error
+        return res.status(invalidData).send({ message: err.message });
+      }
+
+      return res
+        .status(defaultData) //default error
+        .send({ message: "Server Error while updating profile" });
+    });
+};
+
 const login = (req, res) => {
   const { email, password } = req.body;
 
@@ -106,4 +154,11 @@ const login = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser, login, getCurrentUser };
+module.exports = {
+  getUsers,
+  createUser,
+  getUser,
+  login,
+  getCurrentUser,
+  updateProfile,
+};
