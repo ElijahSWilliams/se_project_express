@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const mainRouter = require("./routes/index"); // this includes both routers
-
+const { login, createUser } = require("./controllers/users");
 const app = express();
 
 const { PORT = 3001 } = process.env;
@@ -26,6 +26,9 @@ app.use((req, res, next) => {
 });
 
 app.use("/", mainRouter);
+
+app.post("/signin", login);
+app.post("/signup", createUser);
 
 app.listen(PORT, () => {
   console.log("Running on Port:", PORT);
