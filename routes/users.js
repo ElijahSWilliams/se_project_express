@@ -12,7 +12,7 @@ const {
 router.get("/", verifyMiddleWare, getUsers); //this route now requires authorization
 router.get("/:id", verifyMiddleWare, getUser); //requires protection
 router.post("/", verifyMiddleWare, createUser); //requires protection
-router.get("/users/me", verifyMiddleWare, getCurrentUser);
-router.patch("/users/me", verifyMiddleWare, updateProfile);
+router.get("/me", verifyMiddleWare, getCurrentUser);
+router.patch("/me", verifyMiddleWare, updateProfile);
 
 module.exports = router;
