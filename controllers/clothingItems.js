@@ -1,5 +1,11 @@
 const ClothingItems = require("../models/clothingItems");
-const { dataNotFound, defaultData, invalidData, duplicateData } = require("../utils/errors");
+const {
+  dataNotFound,
+  defaultData,
+  invalidData,
+  duplicateData,
+  unauthorizedData,
+} = require("../utils/errors");
 
 // ClothingItem Controller File
 
@@ -102,23 +108,38 @@ const dislikeItem = (req, res) => {
 const deleteItem = (req, res) => {
   const { itemId } = req.params; // get item ID from req param
   console.log("itemId:", itemId);
+  const userId = req.user._id; // declare userID
 
-  ClothingItems.findByIdAndDelete(itemId)
-    .orFail()
+  ClothingItems.findById(itemId)
+    .orFail() //ensures an error is thrown if the item doesn't exist
     .then((item) => {
-      res.status(200).send({ message: "Successfully Deleted", item });
+      if (item.owner.toString() !== userId) {
+        return res.status(403).send({ message: "Unauthorized Action" });
+      }
+      //proceed with deletion if itemid and userid match
+      return ClothingItems.findByIdAndDelete(itemId)
+        .then((deletedItem) => {
+          res
+            .status(200)
+            .send({ message: "Successfully Deleted", deletedItem });
+        })
+        .catch((err) => {
+          console.error(err);
+          console.log(err.name);
+          if (err.name === "DocumentNotFoundError") {
+            return res.status(dataNotFound).send({ message: "Item Not Found" });
+          }
+          if (err.name === "CastError") {
+            return res.status(invalidData).send({ message: "Invalid Data" });
+          }
+          return res
+            .status(defaultData)
+            .send({ message: "An Error from deleteItem has occured" });
+        }); //end findByIdAndDelete
     })
     .catch((err) => {
       console.error(err);
-      console.log(err.name);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(dataNotFound).send({ message: "Item Not Found" });
-      } if (err.name === "CastError") {
-        return res.status(invalidData).send({ message: "Invalid Data" });
-      }
-      return res
-        .status(defaultData)
-        .send({ message: "An Error from deleteItem has occured" });
+      return res.status(defaultData).send({ message: "Server Error" });
     });
 };
 

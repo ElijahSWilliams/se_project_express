@@ -146,7 +146,9 @@ const login = (req, res) => {
   return User.findUserByCredential(email, password)
     .then((user) => {
       //create a JWS token
-      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
+      const token = jwt.sign({ id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
       return res.status(200).send({ user, token });
     })
     .catch((err) => {
