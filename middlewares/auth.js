@@ -4,7 +4,7 @@ const JWT_SECRET = require("../utils/config");
 const { unauthorizedData } = require("../utils/errors");
 
 //authorization middleware
-const verifyMiddleWare = (req, res, next) => {
+const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   //handle no authorization or incorrect authorization
@@ -33,4 +33,4 @@ const verifyMiddleWare = (req, res, next) => {
   return next(); //send request to next middleware
 };
 
-module.exports = verifyMiddleWare;
+module.exports = auth;

@@ -36,7 +36,9 @@ const createUser = (req, res) => {
       .then((hashPassword) => {
         User.create({ name, avatar, email, password: hashPassword })
           .then((user) => {
-            res.status(201).send(user);
+            // Use destructuring to exclude the password from the response
+            const { password, ...userWithoutPassword } = user.toObject(); //convert user to a javascript obj without the password
+            res.status(201).send(userWithoutPassword);
           })
           .catch((err) => {
             console.error(err);
@@ -79,7 +81,7 @@ const getCurrentUser = (req, res) => {
   const userId = req.user._id; //get user Id
 
   //access user
-  const user = User.findById(userId)
+  User.findById(userId)
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: "Can't Find User" });

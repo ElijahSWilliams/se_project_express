@@ -1,5 +1,5 @@
 const router = require("express").Router(); // import express and express router
-const verifyMiddleWare = require("../middlewares/auth");
+const auth = require("../middlewares/auth");
 const {
   getUsers,
   createUser,
@@ -9,10 +9,10 @@ const {
 } = require("../controllers/users");
 
 //protected routes
-router.get("/", verifyMiddleWare, getUsers); //this route now requires authorization
-router.get("/:id", verifyMiddleWare, getUser); //requires protection
-router.post("/", verifyMiddleWare, createUser); //requires protection
-router.get("/me", verifyMiddleWare, getCurrentUser);
-router.patch("/me", verifyMiddleWare, updateProfile);
+router.get("/", auth, getUsers); //this route now requires authorization
+router.get("/:id", auth, getUser); //requires protection
+router.post("/", auth, createUser); //requires protection
+router.get("/me", auth, getCurrentUser);
+router.patch("/me", auth, updateProfile);
 
 module.exports = router;

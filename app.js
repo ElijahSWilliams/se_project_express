@@ -21,9 +21,6 @@ app.use(cors()); //install cors
 
 app.use("/", mainRouter);
 
-app.post("/signin", login);
-app.post("/signup", createUser);
-
 app.listen(PORT, () => {
   console.log("Running on Port:", PORT);
 });
