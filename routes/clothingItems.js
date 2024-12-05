@@ -1,5 +1,6 @@
 const router = require("express").Router(); // import express and router
-const { verifyMiddleWare } = require("../middlewares/auth");
+const verifyMiddleWare = require("../middlewares/auth");
+
 const {
   getItems,
   createItem,
