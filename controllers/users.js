@@ -58,7 +58,7 @@ const createUser = (req, res) => {
 }; //end createUser
 
 const getUser = (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user._id; //get user id
 
   User.findById(userId)
     .orFail()
