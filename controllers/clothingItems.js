@@ -124,7 +124,6 @@ const deleteItem = (req, res) => {
             .send({ message: "Successfully Deleted", deletedItem });
         })
         .catch((err) => {
-          console.error(err);
           console.log(err.name);
           if (err.name === "DocumentNotFoundError") {
             return res.status(dataNotFound).send({ message: "Item Not Found" });
@@ -134,11 +133,17 @@ const deleteItem = (req, res) => {
           }
           return res
             .status(defaultData)
-            .send({ message: "An Error from deleteItem has occured" });
+            .send({ message: "An Error occured during deletion" });
         }); //end findByIdAndDelete
     })
     .catch((err) => {
-      console.error(err);
+      console.error(err.name);
+      if (err.name === "CastError") {
+        return res.status(dataNotFound).send({ message: "Invalid Id" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(dataNotFound).send({ message: "Item Not Found" });
+      }
       return res.status(defaultData).send({ message: "Server Error" });
     });
 };

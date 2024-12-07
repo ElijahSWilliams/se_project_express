@@ -43,7 +43,7 @@ const createUser = (req, res) => {
           .catch((err) => {
             console.error(err);
             if (err.name === "ValidationError") {
-              return res.status(400).send({ message: err.message });
+              return res.status(invalidData).send({ message: err.message });
             }
             return res
               .status(defaultData)
@@ -159,7 +159,7 @@ const login = (req, res) => {
       return res.status(200).send({ user, token });
     })
     .catch((err) => {
-      return res.status(unauthorizedData).send({ message: err.message });
+      return res.status(invalidData).send({ message: err.message });
     });
 };
 
