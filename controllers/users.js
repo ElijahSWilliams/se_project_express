@@ -58,7 +58,7 @@ const createUser = (req, res) => {
 }; //end createUser
 
 const getUser = (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user._id;
 
   User.findById(userId)
     .orFail()
@@ -79,6 +79,7 @@ const getUser = (req, res) => {
 
 const getCurrentUser = (req, res) => {
   const userId = req.user._id; //get user Id
+  console.log(userId);
 
   //access user
   User.findById(userId)
@@ -89,6 +90,10 @@ const getCurrentUser = (req, res) => {
       return res.status(200).send(user);
     })
     .catch((err) => {
+      console.log(err.name);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(dataNotFound).send({ message: err.message });
+      }
       console.error(err);
       res.status(defaultData).send({ message: "Server Error" });
     });
@@ -148,7 +153,7 @@ const login = (req, res) => {
   return User.findUserByCredential(email, password)
     .then((user) => {
       //create a JWS token
-      const token = jwt.sign({ id: user._id }, JWT_SECRET, {
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
       return res.status(200).send({ user, token });
