@@ -9,9 +9,6 @@ const {
 } = require("../controllers/users");
 
 // protected routes
-router.get("/", auth, getUsers); // this route now requires authorization
-router.get("/:id", auth, getUser); // requires protection
-router.post("/", auth, createUser); // requires protection
 router.get("/me", auth, getCurrentUser);
 router.patch("/me", auth, updateProfile);
 
