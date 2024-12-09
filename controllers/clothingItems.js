@@ -1,10 +1,5 @@
 const ClothingItems = require("../models/clothingItems");
-const {
-  dataNotFound,
-  defaultData,
-  invalidData,
-  forbidden,
-} = require("../utils/errors");
+const { dataNotFound, defaultData, invalidData } = require("../utils/errors");
 
 // ClothingItem Controller File
 
