@@ -5,6 +5,7 @@ const {
   invalidData,
   duplicateData,
   unauthorizedData,
+  forbidden,
 } = require("../utils/errors");
 
 // ClothingItem Controller File
@@ -114,7 +115,7 @@ const deleteItem = (req, res) => {
     .orFail() // ensures an error is thrown if the item doesn't exist
     .then((item) => {
       if (item.owner.toString() !== userId) {
-        return res.status(403).send({ message: "Unauthorized Action" });
+        return res.status(forbidden).send({ message: "Unauthorized Action" });
       }
       // proceed with deletion if itemid and userid match
       return ClothingItems.findByIdAndDelete(itemId)

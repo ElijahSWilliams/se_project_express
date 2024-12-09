@@ -6,4 +6,5 @@ module.exports = {
   defaultData: 500,
   duplicateData: 409,
   unauthorizedData: 401,
+  forbidden: 403,
 };

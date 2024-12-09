@@ -85,7 +85,7 @@ const getCurrentUser = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: "Can't Find User" });
+        res.status(dataNotFound).send({ message: "Can't Find User" });
       }
       return res.status(200).send(user);
     })
