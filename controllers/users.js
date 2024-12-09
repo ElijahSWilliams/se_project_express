@@ -7,7 +7,6 @@ const {
   dataNotFound,
   defaultData,
   duplicateData,
-  unauthorizedData,
 } = require("../utils/errors");
 
 // User Controller File
@@ -156,7 +155,7 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      return res.status(200).send({ user, token });
+      return res.status(200).send({ token });
     })
     .catch((err) => res.status(invalidData).send({ message: err.message }));
 };
