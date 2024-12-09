@@ -7,6 +7,7 @@ const {
   dataNotFound,
   defaultData,
   duplicateData,
+  unauthorizedData,
 } = require("../utils/errors");
 
 // User Controller File
@@ -130,12 +131,17 @@ const login = (req, res) => {
       });
       return res.status(200).send({ token });
     })
-    .catch((err) => res.status(invalidData).send({ message: err.message }));
+    .catch((err) => {
+      if (err.message === "Incorrect Email Or Password") {
+        return res.status(unauthorizedData).send({ message: err.message });
+      }
+      // Handle unexpected errors
+      return res.status(defaultData).send({ message: "An error occurred" });
+    });
 };
 
 module.exports = {
   createUser,
-
   login,
   getCurrentUser,
   updateProfile,
