@@ -33,31 +33,31 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Enter a password"],
-    select: false, //this hides the password when returning data from the database
+    select: false, // this hides the password when returning data from the database
   },
 });
 
-//create custom findUserByCredential method that is attached to userSchema
+// create custom findUserByCredential method that is attached to userSchema
 userSchema.statics.findUserByCredential = function findUserByCredential(
   email,
   password
 ) {
   return this.findOne({ email })
-    .select("+password") //include hashed password
+    .select("+password") // include hashed password
     .then((user) => {
-      //if user not found
+      // if user not found
       if (!user) {
-        return Promise.reject(new Error("Incorrect Email or Password")); //throw error
+        return Promise.reject(new Error("Incorrect Email or Password")); // throw error
       }
 
-      //if user is found
+      // if user is found
       return bcrypt.compare(password, user.password).then((matched) => {
-        //if passwords dont match
+        // if passwords dont match
         if (!matched) {
-          return Promise.reject(new Error("Incorrect Email or Password")); //throw error
+          return Promise.reject(new Error("Incorrect Email or Password")); // throw error
         }
-        //if passwords do match
-        return user; //user is available
+        // if passwords do match
+        return user; // user is available
       });
     });
 };

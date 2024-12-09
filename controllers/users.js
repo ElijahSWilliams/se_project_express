@@ -1,6 +1,6 @@
-const User = require("../models/user"); // import user schema
-const bcrypt = require("bcrypt"); //import
+const bcrypt = require("bcrypt"); // import
 const jwt = require("jsonwebtoken");
+const User = require("../models/user"); // import user schema
 const { JWT_SECRET } = require("../utils/config");
 const {
   invalidData,
@@ -23,21 +23,21 @@ const getUsers = (req, res) => {
 };
 
 const createUser = (req, res) => {
-  const { name, avatar, email, password } = req.body; //get name avatar email and password
+  const { name, avatar, email, password } = req.body; // get name avatar email and password
 
-  //check if user exists
+  // check if user exists
   User.findOne({ email }).then((existingUser) => {
     if (existingUser) {
       return res.status(duplicateData).send({ message: "User Already Exists" });
     }
-    //hash password before creating a user
+    // hash password before creating a user
     bcrypt
       .hash(password, 10)
       .then((hashPassword) => {
         User.create({ name, avatar, email, password: hashPassword })
           .then((user) => {
             // Use destructuring to exclude the password from the response
-            const { password, ...userWithoutPassword } = user.toObject(); //convert user to a javascript obj without the password
+            const { password, ...userWithoutPassword } = user.toObject(); // convert user to a javascript obj without the password
             res.status(201).send(userWithoutPassword);
           })
           .catch((err) => {
@@ -55,10 +55,10 @@ const createUser = (req, res) => {
         return res.status(defaultData).send({ message: "An Error Occured" });
       });
   }); //
-}; //end createUser
+}; // end createUser
 
 const getUser = (req, res) => {
-  const userId = req.user._id; //get user id
+  const userId = req.user._id; // get user id
 
   User.findById(userId)
     .orFail()
@@ -78,10 +78,10 @@ const getUser = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const userId = req.user._id; //get user Id
+  const userId = req.user._id; // get user Id
   console.log(userId);
 
-  //access user
+  // access user
   User.findById(userId)
     .then((user) => {
       if (!user) {
@@ -100,13 +100,13 @@ const getCurrentUser = (req, res) => {
 };
 
 const updateProfile = (req, res) => {
-  const userId = req.user._id; //get ID
+  const userId = req.user._id; // get ID
 
-  const { name, avatar } = req.body; //destructure fields that we want to change
+  const { name, avatar } = req.body; // destructure fields that we want to change
 
-  const updatedInfo = {}; //empty obj to store updated info
+  const updatedInfo = {}; // empty obj to store updated info
 
-  //make sure nothing is empty
+  // make sure nothing is empty
   if (!name && !avatar) {
     return res
       .status(invalidData)
@@ -121,28 +121,28 @@ const updateProfile = (req, res) => {
     updatedInfo.avatar = avatar;
   }
 
-  //update the info
+  // update the info
   User.findByIdAndUpdate(userId, updatedInfo, {
     new: true,
     runValidators: true,
   })
     .then((user) => {
       if (!user) {
-        //if no user
+        // if no user
         return res.status(dataNotFound).send({ message: "user Not Found" });
       }
-      //return
+      // return
       return res.status(200).send(user);
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        //if Validation Error
+        // if Validation Error
         return res.status(invalidData).send({ message: err.message });
       }
 
       return res
-        .status(defaultData) //default error
+        .status(defaultData) // default error
         .send({ message: "Server Error while updating profile" });
     });
 };
@@ -152,15 +152,13 @@ const login = (req, res) => {
 
   return User.findUserByCredential(email, password)
     .then((user) => {
-      //create a JWS token
+      // create a JWS token
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
       return res.status(200).send({ user, token });
     })
-    .catch((err) => {
-      return res.status(invalidData).send({ message: err.message });
-    });
+    .catch((err) => res.status(invalidData).send({ message: err.message }));
 };
 
 module.exports = {

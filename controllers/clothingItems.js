@@ -111,12 +111,12 @@ const deleteItem = (req, res) => {
   const userId = req.user._id; // declare userID
 
   ClothingItems.findById(itemId)
-    .orFail() //ensures an error is thrown if the item doesn't exist
+    .orFail() // ensures an error is thrown if the item doesn't exist
     .then((item) => {
       if (item.owner.toString() !== userId) {
         return res.status(403).send({ message: "Unauthorized Action" });
       }
-      //proceed with deletion if itemid and userid match
+      // proceed with deletion if itemid and userid match
       return ClothingItems.findByIdAndDelete(itemId)
         .then((deletedItem) => {
           res
@@ -134,7 +134,7 @@ const deleteItem = (req, res) => {
           return res
             .status(defaultData)
             .send({ message: "An Error occured during deletion" });
-        }); //end findByIdAndDelete
+        }); // end findByIdAndDelete
     })
     .catch((err) => {
       console.error(err.name);

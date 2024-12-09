@@ -1,8 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const mainRouter = require("./routes/index"); // this includes both routers
 const { login, createUser } = require("./controllers/users");
-const cors = require("cors");
+
 const app = express();
 
 const { PORT = 3001 } = process.env;
@@ -17,7 +18,7 @@ mongoose
 
 // Route Implements
 app.use(express.json()); // parse Data before any routers. You will usually need to do this
-app.use(cors()); //install cors
+app.use(cors()); // install cors
 
 app.use("/", mainRouter);
 
