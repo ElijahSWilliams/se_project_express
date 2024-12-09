@@ -3,8 +3,6 @@ const {
   dataNotFound,
   defaultData,
   invalidData,
-  duplicateData,
-  unauthorizedData,
   forbidden,
 } = require("../utils/errors");
 

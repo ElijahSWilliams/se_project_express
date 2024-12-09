@@ -30,13 +30,14 @@ const createUser = (req, res) => {
       return res.status(duplicateData).send({ message: "User Already Exists" });
     }
     // hash password before creating a user
-    bcrypt
+    return bcrypt
       .hash(password, 10)
       .then((hashPassword) => {
         User.create({ name, avatar, email, password: hashPassword })
           .then((user) => {
-            // Use destructuring to exclude the password from the response
-            const { password, ...userWithoutPassword } = user.toObject(); // convert user to a javascript obj without the password
+            // Use destructuring to exclude the password from the response and rename password to newPassword
+            const { password: newPassword, ...userWithoutPassword } =
+              user.toObject(); // convert user to a javascript obj without the password
             res.status(201).send(userWithoutPassword);
           })
           .catch((err) => {
@@ -94,7 +95,7 @@ const getCurrentUser = (req, res) => {
         return res.status(dataNotFound).send({ message: err.message });
       }
       console.error(err);
-      res.status(defaultData).send({ message: "Server Error" });
+      return res.status(defaultData).send({ message: "Server Error" });
     });
 };
 
@@ -113,15 +114,17 @@ const updateProfile = (req, res) => {
   }
 
   if (name) {
+    // if theres a name
     updatedInfo.name = name;
   }
 
   if (avatar) {
+    // if theres an avatar
     updatedInfo.avatar = avatar;
   }
 
   // update the info
-  User.findByIdAndUpdate(userId, updatedInfo, {
+  return User.findByIdAndUpdate(userId, updatedInfo, {
     new: true,
     runValidators: true,
   })
