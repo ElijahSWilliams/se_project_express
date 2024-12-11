@@ -123,6 +123,12 @@ const updateProfile = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res
+      .status(invalidData)
+      .send({ message: "An Email and Password are required." });
+  }
+
   return User.findUserByCredential(email, password)
     .then((user) => {
       // create a JWS token
@@ -132,7 +138,7 @@ const login = (req, res) => {
       return res.status(200).send({ token });
     })
     .catch((err) => {
-      if (err.message === "Incorrect Email Or Password") {
+      if (err.message === "Incorrect Email or Password") {
         return res.status(unauthorizedData).send({ message: err.message });
       }
       // Handle unexpected errors
