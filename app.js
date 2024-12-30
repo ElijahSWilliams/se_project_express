@@ -17,7 +17,7 @@ mongoose
 
 // Route Implements
 app.use(express.json()); // parse Data before any routers. You will usually need to do this
-app.use(cors()); // install cors
+app.use(cors({ origin: "http://localhost:3000" })); // install cors
 
 app.use("/", mainRouter);
 
