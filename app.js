@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mainRouter = require("./routes/index"); // this includes both routers
+const errorHandler = require("./middlewares/errorHandling");
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.use(express.json()); // parse Data before any routers. You will usually need
 app.use(cors({ origin: "http://localhost:3000" })); // install cors
 
 app.use("/", mainRouter);
+
+app.use(errorHandler); //middleware for handling errors
 
 app.listen(PORT, () => {
   console.log("Running on Port:", PORT);

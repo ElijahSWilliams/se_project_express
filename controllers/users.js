@@ -8,47 +8,51 @@ const {
   defaultData,
   duplicateData,
   unauthorizedData,
+  ConflictError,
+  NotFoundError,
+  BadRequestError,
+  ServerError,
+  UnauthorizedError,
 } = require("../utils/errors");
 
 // User Controller File
 
-const createUser = (req, res) => {
-  const { name, avatar, email, password } = req.body; // get name avatar email and password
+const createUser = (req, res, next) => {
+  //add next to allow central error handling
+  const { name, avatar, email, password } = req.body;
 
-  // check if user exists
-  User.findOne({ email }).then((existingUser) => {
-    if (existingUser) {
-      return res.status(duplicateData).send({ message: "User Already Exists" });
-    }
-    // hash password before creating a user
-    return bcrypt
-      .hash(password, 10)
-      .then((hashPassword) => {
-        User.create({ name, avatar, email, password: hashPassword })
-          .then((user) => {
-            // Use destructuring to exclude the password from the response and rename password to newPassword
-            const { password: newPassword, ...userWithoutPassword } =
-              user.toObject(); // convert user to a javascript obj without the password
-            res.status(201).send(userWithoutPassword);
-          })
-          .catch((err) => {
-            console.error(err);
-            if (err.name === "ValidationError") {
-              return res.status(invalidData).send({ message: err.message });
-            }
-            return res
-              .status(defaultData)
-              .send({ message: "An error has occured" });
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-        return res.status(defaultData).send({ message: "An Error Occured" });
-      });
-  }); //
-}; // end createUser
+  // Check if user exists
+  User.findOne({ email })
+    .then((existingUser) => {
+      if (existingUser) {
+        throw new ConflictError("User Already Exists");
+      }
 
-const getCurrentUser = (req, res) => {
+      // If new user, hash password
+      return bcrypt.hash(password, 10);
+    })
+    .then((hashPassword) => {
+      //then
+      // Create user with hashed password
+      return User.create({ name, avatar, email, password: hashPassword }); //return User.create
+    })
+    .then((user) => {
+      //then with the result of user.create
+      // Exclude password from the response
+      const { password: newPassword, ...userWithoutPassword } = user.toObject();
+      res.status(201).send(userWithoutPassword); // Respond with created user
+    })
+    .catch((err) => {
+      // Handle errors
+      if (err.name === "ValidationError") {
+        next(new BadRequestError("Invalid Data"));
+      } else {
+        next(err); // Pass other errors to the centralized error handler
+      }
+    });
+};
+
+const getCurrentUser = (req, res, next) => {
   const userId = req.user._id; // get user Id
   console.log(userId);
 
@@ -56,9 +60,9 @@ const getCurrentUser = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        res.status(dataNotFound).send({ message: "Can't Find User" });
+        next(new NotFoundError("User not Found"));
       }
-      return res.status(200).send(user);
+      return res.status(200).send(user); //successful response
     })
     .catch((err) => {
       console.log(err.name);
@@ -66,11 +70,11 @@ const getCurrentUser = (req, res) => {
         return res.status(dataNotFound).send({ message: err.message });
       }
       console.error(err);
-      return res.status(defaultData).send({ message: "Server Error" });
+      next(err); //pass error to centralized error handler
     });
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const userId = req.user._id; // get ID
 
   const { name, avatar } = req.body; // destructure fields that we want to change
@@ -79,9 +83,7 @@ const updateProfile = (req, res) => {
 
   // make sure nothing is empty
   if (!name && !avatar) {
-    return res
-      .status(invalidData)
-      .send({ message: "Please Enter a name and avatar" });
+    return next(new BadRequestError("Please Enter a Name and Avatar Link"));
   }
 
   if (name) {
@@ -102,7 +104,7 @@ const updateProfile = (req, res) => {
     .then((user) => {
       if (!user) {
         // if no user
-        return res.status(dataNotFound).send({ message: "user Not Found" });
+        return next(new NotFoundError("user not Found"));
       }
       // return
       return res.status(200).send(user);
@@ -111,22 +113,18 @@ const updateProfile = (req, res) => {
       console.error(err);
       if (err.name === "ValidationError") {
         // if Validation Error
-        return res.status(invalidData).send({ message: err.message });
+        return next(new BadRequestError("Invalid Data"));
       }
 
-      return res
-        .status(defaultData) // default error
-        .send({ message: "Server Error while updating profile" });
+      return next(new ServerError("Server Error while updating profile"));
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res
-      .status(invalidData)
-      .send({ message: "An Email and Password are required." });
+    return next(new BadRequestError("An Email and Password are required"));
   }
 
   return User.findUserByCredential(email, password)
@@ -135,14 +133,14 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      return res.status(200).send({ token });
+      return res.status(200).send({ token }); //success
     })
     .catch((err) => {
       if (err.message === "Incorrect Email or Password") {
-        return res.status(unauthorizedData).send({ message: err.message });
+        return next(new UnauthorizedError("Incorrect Email or Password"));
       }
       // Handle unexpected errors
-      return res.status(defaultData).send({ message: "An error occurred" });
+      return next(new ServerError("An Error Occured"));
     });
 };
 
