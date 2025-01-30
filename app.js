@@ -1,8 +1,9 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+const express = require("express"); //import express module
+const mongoose = require("mongoose"); //import mongoose module
+const cors = require("cors"); //import cors module
 const mainRouter = require("./routes/index"); // this includes both routers
 const errorHandler = require("./middlewares/errorHandling");
+const { errors } = required("celebrate"); //import errors from celebrate
 
 const app = express();
 
@@ -22,7 +23,9 @@ app.use(cors({ origin: "http://localhost:3000" })); // install cors
 
 app.use("/", mainRouter);
 
-app.use(errorHandler); //middleware for handling errors
+app.use(errors()); //celebrate error handler
+
+app.use(errorHandler); //centralized middleware for handling errors
 
 app.listen(PORT, () => {
   console.log("Running on Port:", PORT);
