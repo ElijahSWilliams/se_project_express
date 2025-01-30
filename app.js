@@ -3,9 +3,10 @@ const mongoose = require("mongoose"); //import mongoose module
 const cors = require("cors"); //import cors module
 const mainRouter = require("./routes/index"); // this includes both routers
 const errorHandler = require("./middlewares/errorHandling");
-const { errors } = required("celebrate"); //import errors from celebrate
-
+const { errors } = require("celebrate"); //import errors from celebrate
 const app = express();
+const { requestLogger, expressLogger } = require("./middlewares/logger"); //import logging functions to log errors
+const { errorLogger } = require("express-winston");
 
 const { PORT = 3001 } = process.env;
 
@@ -21,9 +22,13 @@ mongoose
 app.use(express.json()); // parse Data before any routers. You will usually need to do this
 app.use(cors({ origin: "http://localhost:3000" })); // install cors
 
-app.use("/", mainRouter);
+app.use(requestLogger); //initialize request logger for logging requests. this must come before the routes
 
-app.use(errors()); //celebrate error handler
+app.use("/", mainRouter); //head router
+
+app.use(errorLogger); //initialize error logger for logging errors. This must come after the routes
+
+app.use(errors()); //celebrate error handler function call
 
 app.use(errorHandler); //centralized middleware for handling errors
 
