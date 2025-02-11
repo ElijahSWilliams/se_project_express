@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-const { unauthorizedData } = require("../utils/errors");
+const { unauthorizedData, UnauthorizedError } = require("../utils/errors");
 
 // authorization middleware
 const auth = (req, res, next) => {
@@ -22,9 +22,7 @@ const auth = (req, res, next) => {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     console.error(err);
-    return res
-      .status(unauthorizedData)
-      .send({ message: "Authorization Required" });
+    return next(new UnauthorizedError("Authorization Required"));
   }
 
   req.user = payload; // assign payload to req obj
