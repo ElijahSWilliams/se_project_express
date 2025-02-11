@@ -1,6 +1,7 @@
 const express = require("express"); //import express module
 const mongoose = require("mongoose"); //import mongoose module
 const cors = require("cors"); //import cors module
+require("dotenv").config();
 const mainRouter = require("./routes/index"); // this includes both routers
 const errorHandler = require("./middlewares/errorHandling");
 const { errors } = require("celebrate"); //import errors from celebrate
