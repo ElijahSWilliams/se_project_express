@@ -22,7 +22,7 @@ const getItems = (req, res, next) => {
     })
     .catch((err) => {
       console.error(err);
-      return next(new ServerError("An Error Occured"));
+      return next(new ServerError("An Error Occured in getItems"));
     });
 };
 
@@ -42,7 +42,7 @@ const createItem = (req, res, next) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return next(new BadRequestError());
+        return next(new BadRequestError("Bad Request Error in createItem"));
       }
       return next(new ServerError("Server Error"));
     });
@@ -60,7 +60,7 @@ const likeItem = (req, res, next) => {
   )
     .then((item) => {
       if (!item) {
-        return next(new NotFoundError("Item Not Found"));
+        return next(new NotFoundError("Item Not Found error in likeItem"));
       }
       return res.status(200).send({ message: "Liked", item });
     })
@@ -70,7 +70,7 @@ const likeItem = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid ID"));
       }
-      return next(new ServerError("An Erro Has Occured"));
+      return next(new ServerError("An Error Has Occured in likeItem"));
     });
 };
 
@@ -95,7 +95,9 @@ const dislikeItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(invalidData).send({ message: "Invalid ID" });
       }
-      return next(new ServerError("An error occured on the server"));
+      return next(
+        new ServerError("An error occured on the server in dislikeItem")
+      );
     });
 };
 
@@ -137,7 +139,7 @@ const deleteItem = (req, res, next) => {
       if (err.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Item Not Found"));
       }
-      return next(new ServerError("Server Error"));
+      return next(new ServerError("Server Error in deleteItem"));
     });
 };
 
