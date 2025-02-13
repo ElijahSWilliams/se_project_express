@@ -139,14 +139,4 @@ const deleteItem = (req, res, next) => {
       if (err.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Item Not Found"));
       }
-      return next(new ServerError("Server Error in deleteItem"));
-    });
-};
-
-module.exports = {
-  getItems,
-  createItem,
-  likeItem,
-  dislikeItem,
-  deleteItem,
-};
+      return next(new ServerError("Server Erro
