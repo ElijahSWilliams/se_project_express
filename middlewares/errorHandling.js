@@ -5,7 +5,7 @@ const errorHandler = (err, req, res, next) => {
 
   console.error(errorMessage, statusCode);
 
-  res.status(statusCode).send(errorMessage);
+  res.status(statusCode).send({ message: errorMessage });
 };
 
-module.exports = errorHandl
+module.exports = errorHandler;

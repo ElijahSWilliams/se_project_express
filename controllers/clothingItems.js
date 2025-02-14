@@ -74,7 +74,7 @@ const likeItem = (req, res, next) => {
     });
 };
 
-const dislikeItem = (req, res) => {
+const dislikeItem = (req, res, next) => {
   const { itemId } = req.params;
   console.log("itemId", itemId);
 
@@ -93,7 +93,7 @@ const dislikeItem = (req, res) => {
       console.log(err);
       console.log(err.name);
       if (err.name === "CastError") {
-        return res.status(invalidData).send({ message: "Invalid ID" });
+        return next(new BadRequestError("Invalid Data"));
       }
       return next(
         new ServerError("An error occured on the server in dislikeItem")
@@ -108,7 +108,7 @@ const deleteItem = (req, res, next) => {
   const userId = req.user._id; // declare userID
 
   ClothingItems.findById(itemId)
-    .orFail() // ensures an error is thrown if the item doesn't exist
+    .orFail(new NotFoundError("Item Not Found")) // ensures an error is thrown if the item doesn't exist
     .then((item) => {
       if (item.owner.toString() !== userId) {
         return next(new ForbiddenError("Unauthorized Action"));
@@ -134,9 +134,19 @@ const deleteItem = (req, res, next) => {
     .catch((err) => {
       console.error(err.name);
       if (err.name === "CastError") {
-        return next(new NotFoundError("Invalid ID"));
+        return next(new BadRequestError("Invalid ID"));
       }
       if (err.name === "DocumentNotFoundError") {
         return next(new NotFoundError("Item Not Found"));
       }
-      return next(new ServerError("Server Erro
+      return next(new ServerError("Server Error in deleteItem"));
+    });
+};
+
+module.exports = {
+  getItems,
+  createItem,
+  likeItem,
+  dislikeItem,
+  deleteItem,
+};

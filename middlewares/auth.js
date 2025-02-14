@@ -8,9 +8,7 @@ const auth = (req, res, next) => {
 
   // handle no authorization or incorrect authorization
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    return res
-      .status(unauthorizedData)
-      .send({ message: "No Token Provided. Unauthorized User" });
+    return next(new UnauthorizedError("Authorization Error"));
   }
 
   // extract token from header
