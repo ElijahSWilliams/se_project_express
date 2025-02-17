@@ -8,7 +8,7 @@ class ServerError extends Error {
 }
 
 class BadRequestError extends Error {
-  //invalidData 400
+  // invalidData 400
   constructor(message) {
     super(message);
     this.name = "BadRequestError";
@@ -33,7 +33,7 @@ class ForbiddenError extends Error {
 }
 
 class NotFoundError extends Error {
-  //error 404
+  // error 404
   constructor(message) {
     super(message);
     this.name = "NotFoundError";

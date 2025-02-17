@@ -1,8 +1,8 @@
-//file for logging
-const winston = require("winston"); //import winston 'make sure to install it using npm install winston'
-const expressWinston = require("express-winston"); //import express winston to make winston easier to use with express. 'makse sure to install it using npm install express-winston
+// file for logging
+const winston = require("winston"); // import winston 'make sure to install it using npm install winston'
+const expressWinston = require("express-winston"); // import express winston to make winston easier to use with express. 'makse sure to install it using npm install express-winston
 
-//custom formatter
+// custom formatter
 const messageFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.printf(
@@ -11,7 +11,7 @@ const messageFormat = winston.format.combine(
   )
 );
 
-//request logger
+// request logger
 const requestLogger = expressWinston.logger({
   transports: [
     // 'Transports' is an array
@@ -26,7 +26,7 @@ const requestLogger = expressWinston.logger({
   ],
 });
 
-//error logger to write errors to a seperate 'error.log' file
+// error logger to write errors to a seperate 'error.log' file
 const errorLogger = expressWinston.errorLogger({
   transports: [new winston.transports.File({ filename: "error.log" })],
   format: winston.format.json(),

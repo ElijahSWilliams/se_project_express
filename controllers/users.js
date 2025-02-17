@@ -18,7 +18,7 @@ const {
 // User Controller File
 
 const createUser = (req, res, next) => {
-  //add next to allow central error handling
+  // add next to allow central error handling
   const { name, avatar, email, password } = req.body;
 
   // Check if user exists
@@ -31,13 +31,13 @@ const createUser = (req, res, next) => {
       // If new user, hash password
       return bcrypt.hash(password, 10);
     })
-    .then((hashPassword) => {
-      //then
+    .then((hashPassword) => 
+      // then
       // Create user with hashed password
-      return User.create({ name, avatar, email, password: hashPassword }); //return User.create
-    })
+       User.create({ name, avatar, email, password: hashPassword }) // return User.create
+    )
     .then((user) => {
-      //then with the result of user.create
+      // then with the result of user.create
       // Exclude password from the response
       const { password: newPassword, ...userWithoutPassword } = user.toObject();
       res.status(201).send(userWithoutPassword); // Respond with created user
@@ -62,12 +62,12 @@ const getCurrentUser = (req, res, next) => {
       if (!user) {
         next(new NotFoundError("User not Found"));
       }
-      return res.status(200).send(user); //successful response
+      return res.status(200).send(user); // successful response
     })
     .catch((err) => {
       console.log(err.name);
       console.error(err);
-      next(err); //pass error to centralized error handler
+      next(err); // pass error to centralized error handler
     });
 };
 
@@ -130,7 +130,7 @@ const login = (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      return res.status(200).send({ token }); //success
+      return res.status(200).send({ token }); // success
     })
     .catch((err) => {
       if (err.message === "Incorrect Email or Password") {

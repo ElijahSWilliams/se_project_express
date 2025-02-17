@@ -5,6 +5,6 @@ const { validateUserUpdates } = require("../middlewares/validation");
 
 // protected routes
 router.get("/me", auth, getCurrentUser);
-router.patch("/me", auth, validateUserUpdates, updateProfile); //authenticate '/me' and validate before updateProfile Runs
+router.patch("/me", auth, validateUserUpdates, updateProfile); // authenticate '/me' and validate before updateProfile Runs
 
 module.exports = router;
