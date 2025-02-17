@@ -8,6 +8,7 @@ const {
   deleteItem,
   dislikeItem,
 } = require("../controllers/clothingItems"); // extract functions from clothingItems file
+const { validateID } = require("../middlewares/validation");
 
 // Create
 router.post("/", auth, createItem);
@@ -16,13 +17,13 @@ router.post("/", auth, createItem);
 router.get("/", getItems);
 
 // like
-router.put("/:itemId/likes", auth, likeItem);
+router.put("/:itemId/likes", auth, validateID, likeItem); //auth then validate item before liking
 
 // Unlike
-router.delete("/:itemId/likes", auth, dislikeItem);
+router.delete("/:itemId/likes", auth, validateID, dislikeItem); //auth then validate item before disliking
 
 // Delete
-router.delete("/:itemId", auth, deleteItem);
+router.delete("/:itemId", auth, validateID, deleteItem); //auth then validate before deleting
 
 // export router
 module.exports = router;
