@@ -2,18 +2,11 @@ const bcrypt = require("bcrypt"); // import
 const jwt = require("jsonwebtoken");
 const User = require("../models/user"); // import user schema
 const { JWT_SECRET } = require("../utils/config");
-const {
-  invalidData,
-  dataNotFound,
-  defaultData,
-  duplicateData,
-  unauthorizedData,
-  ConflictError,
-  NotFoundError,
-  BadRequestError,
-  ServerError,
-  UnauthorizedError,
-} = require("../utils/errors");
+const { ServerError } = require("../utils/ServerError");
+const { BadRequestError } = require("../utils/BadRequestError");
+const { NotFoundError } = require("../utils/NotFoundError");
+const { ConflictError } = require("../utils/ConflictError");
+const { UnauthorizedError } = require("../utils/UnauthorizedError");
 
 // User Controller File
 
@@ -31,15 +24,17 @@ const createUser = (req, res, next) => {
       // If new user, hash password
       return bcrypt.hash(password, 10);
     })
-    .then((hashPassword) => 
-      // then
-      // Create user with hashed password
-       User.create({ name, avatar, email, password: hashPassword }) // return User.create
+    .then(
+      (hashPassword) =>
+        // then
+        // Create user with hashed password
+        User.create({ name, avatar, email, password: hashPassword }) // return User.create
     )
     .then((user) => {
       // then with the result of user.create
       // Exclude password from the response
-      const { password: newPassword, ...userWithoutPassword } = user.toObject();
+      const { userWithoutPassword } = user.toObject();
+      delete userWithoutPassword.password; // removes the password from the response
       res.status(201).send(userWithoutPassword); // Respond with created user
     })
     .catch((err) => {

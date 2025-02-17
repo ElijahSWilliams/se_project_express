@@ -1,19 +1,10 @@
 const ClothingItems = require("../models/clothingItems");
-const {
-  dataNotFound,
-  defaultData,
-  invalidData,
-  forbidden,
-  ServerError,
-  BadRequestError,
-  UnauthorizedError,
-  ForbiddenError,
-  NotFoundError,
-  ConflictError,
-} = require("../utils/errors");
+const { ServerError } = require("../utils/ServerError");
+const { BadRequestError } = require("../utils/BadRequestError");
+const { NotFoundError } = require("../utils/NotFoundError");
+const { ForbiddenError } = require("../utils/ForbiddenError");
 
 // ClothingItem Controller File
-
 // Read
 const getItems = (req, res, next) => {
   ClothingItems.find({})
