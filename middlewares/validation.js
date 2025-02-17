@@ -23,6 +23,10 @@ const validateClothing = celebrate({
       "string.empty": 'The "imageUrl" field must be filled out',
       "string.uri": 'the "imageUrl" field must be a valid url ',
     }), //url validation
+    weather: Joi.string().required().valid("hot", "warm", "cold").messages({
+      "string.empty": "Enter a weather value",
+      "any.only": "Value must be 'hot', 'warm', or 'cold'",
+    }),
   }),
 });
 
@@ -33,7 +37,7 @@ const validateUser = celebrate({
       "string.max": 'The maximum length of the "name" field is 30',
       "string.empty": 'The "name" field must be filled in',
     }),
-    imageUrl: Joi.string().required().custom(validateURL).messages({
+    avatar: Joi.string().required().custom(validateURL).messages({
       //use validUrl for images
       "string.empty": 'The "imageUrl" field must be filled out',
       "string.uri": 'the "imageUrl" field must be a valid url ',
@@ -53,7 +57,7 @@ const validateLogin = celebrate({
 const validateID = celebrate({
   //validate Id params
   params: Joi.object().keys({
-    postId: Joi.string().hex().length(24), //hexadecimal ID
+    itemId: Joi.string().hex().length(24), //hexadecimal ID
   }),
 });
 
