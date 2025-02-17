@@ -1,7 +1,7 @@
 const express = require("express"); //import express module
 const mongoose = require("mongoose"); //import mongoose module
 const cors = require("cors"); //import cors module
-require("dotenv").config(); //import env module
+require("dotenv").config(); //import dotenv module and call config method
 const mainRouter = require("./routes/index"); // this includes both routers
 const errorHandler = require("./middlewares/errorHandling");
 const { errors } = require("celebrate"); //import errors from celebrate
@@ -28,6 +28,13 @@ app.use(express.json()); // parse Data before any routers. You will usually need
 app.use(cors()); // install cors
 
 app.use(requestLogger); //initialize request logger for logging requests. this must come before the routes
+
+//code for testing app crashes (*Remove when code review is passed*)
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
 
 app.use("/", mainRouter); //head router
 
