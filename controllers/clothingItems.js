@@ -108,7 +108,7 @@ const deleteItem = (req, res, next) => {
   const userId = req.user._id; // declare userID
 
   ClothingItems.findById(itemId)
-    .orFail(new NotFoundError("Item Not Found")) // ensures an error is thrown if the item doesn't exist
+    .orFail() // ensures an error is thrown if the item doesn't exist
     .then((item) => {
       if (item.owner.toString() !== userId) {
         return next(new ForbiddenError("Unauthorized Action"));

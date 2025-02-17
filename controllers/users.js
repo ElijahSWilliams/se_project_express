@@ -66,9 +66,6 @@ const getCurrentUser = (req, res, next) => {
     })
     .catch((err) => {
       console.log(err.name);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(dataNotFound).send({ message: err.message });
-      }
       console.error(err);
       next(err); //pass error to centralized error handler
     });
