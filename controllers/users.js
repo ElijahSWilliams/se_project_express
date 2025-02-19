@@ -32,7 +32,7 @@ const createUser = (req, res, next) => {
     .then((user) => {
       // then with the result of user.create
       // Exclude password from the response
-      const { userWithoutPassword } = user.toObject();
+      const userWithoutPassword = user.toObject();
       delete userWithoutPassword.password; // removes the password from the response
       res.status(201).send(userWithoutPassword); // Respond with created user
     })
