@@ -2,12 +2,11 @@ const bcrypt = require("bcrypt"); // import
 const jwt = require("jsonwebtoken");
 const User = require("../models/user"); // import user schema
 const { JWT_SECRET } = require("../utils/config");
-const { ServerError } = require("../utils/ServerError");
-const { BadRequestError } = require("../utils/BadRequestError");
-const { NotFoundError } = require("../utils/NotFoundError");
-const { ConflictError } = require("../utils/ConflictError");
-const { UnauthorizedError } = require("../utils/UnauthorizedError");
-
+const ServerError = require("../utils/ServerError");
+const BadRequestError = require("../utils/BadRequestError");
+const NotFoundError = require("../utils/NotFoundError");
+const ConflictError = require("../utils/ConflictError");
+const UnauthorizedError = require("../utils/UnauthorizedError");
 // User Controller File
 
 const createUser = (req, res, next) => {

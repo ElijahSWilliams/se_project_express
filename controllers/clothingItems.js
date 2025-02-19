@@ -1,8 +1,8 @@
 const ClothingItems = require("../models/clothingItems");
-const { ServerError } = require("../utils/ServerError");
-const { BadRequestError } = require("../utils/BadRequestError");
-const { NotFoundError } = require("../utils/NotFoundError");
-const { ForbiddenError } = require("../utils/ForbiddenError");
+const ServerError = require("../utils/ServerError");
+const BadRequestError = require("../utils/BadRequestError");
+const NotFoundError = require("../utils/NotFoundError");
+const ForbiddenError = require("../utils/ForbiddenError");
 
 // ClothingItem Controller File
 // Read
